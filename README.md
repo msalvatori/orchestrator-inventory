@@ -1,1 +1,1 @@
-# orchestrator-inventory
+# inventory
