@@ -39,9 +39,9 @@ public class DebitInventoryUseCaseImpl implements DebitInventoryUseCase {
                     if (Objects.nonNull(inventory)) {
                         inventory.debitQuantity(sale.getQuantity());
                         updateInventory.update(inventory);
-                        sendUpdateInventory.sendInventory(sale, SaleEvent.UPDATED_INVENTORY);
+                        sendUpdateInventory.sendInventory(sale, SaleEvent.INVENTORY_PREPARED);
                     } else {
-                        sendUpdateInventory.sendInventory(sale, SaleEvent.ROLLBACK_INVENTORY);
+                        sendUpdateInventory.sendInventory(sale, SaleEvent.INVENTORY_ERROR);
                         LOGGER.info(ESTOQUE_INSUFICIENTE);
                     }
                 }).block();

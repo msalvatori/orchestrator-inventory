@@ -17,11 +17,9 @@ import org.springframework.kafka.core.reactive.ReactiveKafkaConsumerTemplate;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
-import java.util.Objects;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static com.msbank.inventory.core.constants.Constants.Iventory.OPERACAO_R_SUCESSO;
-import static com.msbank.inventory.core.constants.Constants.Iventory.ESTOQUE_INSUFICIENTE;
 import static com.msbank.inventory.core.constants.Constants.Iventory.INICIO_DA_SEPARACAO_DE_MERCADORIA;
 import static com.msbank.inventory.core.constants.Constants.Iventory.FIM_DA_SEPARACAO_DE_MERCADORIA;
 import static com.msbank.inventory.core.constants.Constants.Iventory.OPERACAO_ROLLBACK;
@@ -50,7 +48,7 @@ public class ReceiveSaleToDebitInventoryConsumer {
                .receiveAutoAck()
                .map(ConsumerRecord<String, SaleMessage>::value)
                .doOnNext(saleMessage -> {
-                   if(SaleEvent.CREATED_SALE.equals(saleMessage.getSaleEvent())) {
+                   if(SaleEvent.PREPARE_INVENTORY.equals(saleMessage.getSaleEvent())) {
                        LOGGER.info(SUCCESSFULLY_CONSUMED, SaleMessage.class.getSimpleName(), saleMessage.toString());
                        LOGGER.info(INICIO_DA_SEPARACAO_DE_MERCADORIA);
                        sale.set(saleMessage.getSale());
@@ -61,7 +59,7 @@ public class ReceiveSaleToDebitInventoryConsumer {
                 })
                 .doOnError(throwable -> {
                     LOGGER.info(OPERACAO_ROLLBACK);
-                    sendUpdateInventory.sendInventory(sale.get(), SaleEvent.ROLLBACK_INVENTORY);
+                    sendUpdateInventory.sendInventory(sale.get(), SaleEvent.INVENTORY_ERROR);
                 })
                 .onErrorResume(e -> {LOGGER.info(ERROR_MESSAGE+e); return Mono.empty();})
                 .subscribe();

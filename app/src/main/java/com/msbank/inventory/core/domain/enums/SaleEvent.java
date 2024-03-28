@@ -1,10 +1,9 @@
 package com.msbank.inventory.core.domain.enums;
 
 public enum SaleEvent {
+    PREPARE_INVENTORY,
+    INVENTORY_PREPARED,
+    EXECUTE_ROLLBACK,
+    INVENTORY_ERROR
 
-    CREATED_SALE,
-    UPDATED_INVENTORY,
-    VALIDATED_PAYMENT,
-    ROLLBACK_INVENTORY,
-    FAILED_PAYMENT;
 }

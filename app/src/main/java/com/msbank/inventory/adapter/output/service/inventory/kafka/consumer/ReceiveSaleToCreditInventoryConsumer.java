@@ -28,8 +28,7 @@ public class ReceiveSaleToCreditInventoryConsumer {
     private  CreditInventoryUseCase creditInventoryUseCase;
     @Autowired
     private  FindInventoryByProductIdUseCase findInventoryByProductIdUseCase;
-    @Autowired
-    private  SendUpdateInventory sendUpdateInventory;
+
     @Autowired
     @Qualifier("${spring.kafka.consumer.bean-credit}")
     private  ReactiveKafkaConsumerTemplate<String, SaleMessage> reactiveKafkaConsumerTemplate;
@@ -39,13 +38,13 @@ public class ReceiveSaleToCreditInventoryConsumer {
                 .receiveAutoAck()
                 .map(ConsumerRecord<String, SaleMessage>::value)
                  .doOnNext(saleMessage -> {
-                     if(SaleEvent.FAILED_PAYMENT.equals(saleMessage.getSaleEvent())) {
+                     if(SaleEvent.EXECUTE_ROLLBACK.equals(saleMessage.getSaleEvent())) {
                         LOGGER.info(INICIO_DA_DEVOLUCAO_DA_MERCADORIA);
                         LOGGER.info(SUCCESSFULLY_CONSUMED, SaleMessage.class.getSimpleName(), saleMessage);
                         findInventoryByProductIdUseCase.find(saleMessage.getSale().getProductId())
                                 .doOnSuccess(inventory -> {
-                                    creditInventoryUseCase.credit(inventory)
-                                            .doOnSuccess(inventory1 -> sendUpdateInventory.sendInventory(saleMessage.getSale(), SaleEvent.ROLLBACK_INVENTORY));
+                                    creditInventoryUseCase.credit(inventory);
+
                                     LOGGER.info(OPERACAO_R_SUCESSO, inventory);
                                 }).block();
 
