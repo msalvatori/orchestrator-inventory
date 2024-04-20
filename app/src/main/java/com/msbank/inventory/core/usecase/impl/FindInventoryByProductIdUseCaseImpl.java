@@ -13,7 +13,7 @@ public class FindInventoryByProductIdUseCaseImpl implements FindInventoryByProdu
 
     private final FindInventoryByProductId findInventoryByProductId;
     @Override
-    public Mono<Inventory> find(Integer productId) {
+    public Mono<Inventory> execute(Integer productId) {
         return  findInventoryByProductId.find(productId);
     }
 

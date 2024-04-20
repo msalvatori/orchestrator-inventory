@@ -6,5 +6,5 @@ import com.msbank.inventory.core.output.service.inventory.dto.response.DataRespo
 import reactor.core.publisher.Mono;
 
 public interface SendUpdateInventory {
-    Mono<DataResponseDto> sendInventory(Sale sale, SaleEvent event);
+    Mono<DataResponseDto> send(Sale sale, SaleEvent event);
 }

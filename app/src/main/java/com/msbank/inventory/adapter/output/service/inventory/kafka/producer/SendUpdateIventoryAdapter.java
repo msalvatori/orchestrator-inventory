@@ -23,7 +23,7 @@ public class SendUpdateIventoryAdapter implements SendUpdateInventory {
     @Autowired
     private ReactiveKafkaProducerTemplate<String, SaleMessage> reactiveKafkaProducerTemplate;
     @Override
-    public Mono<DataResponseDto> sendInventory(Sale sale, SaleEvent event) {
+    public Mono<DataResponseDto> send(Sale sale, SaleEvent event) {
 
         var saleMessage = SaleMessage.builder().saleEvent(event).sale(sale).build();
 
@@ -33,8 +33,6 @@ public class SendUpdateIventoryAdapter implements SendUpdateInventory {
                         sale,
                         senderResult.recordMetadata().offset()))
                 .subscribe();
-        return Mono.just(DataResponseDto.builder()
-                .sale(sale)
-                .build());
+        return Mono.just(new DataResponseDto(sale));
     }
 }

@@ -16,7 +16,7 @@ public class CreditInventoryUseCaseImpl implements CreditInventoryUseCase {
 
     private final UpdateInventory updateInventory;
     @Override
-    public Mono<Inventory> credit(Inventory inventory) {
+    public Mono<Inventory> execute(Inventory inventory) {
         return updateInventory.update(inventory);
     }
 

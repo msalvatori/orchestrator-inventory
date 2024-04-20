@@ -4,11 +4,14 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.apache.kafka.common.serialization.Deserializer;
 import java.util.Map;
+
 public class CustomDeserializer <T> implements Deserializer<T> {
+
     public static final String CONFIG_VALUE_CLASS = "value.deserializer.class";
     public static final String CONFIG_KEY_CLASS = "key.deserializer.class";
     private Class<T> cls;
     private final Gson gson = new GsonBuilder().create();
+
     @Override
     public void configure(Map<String, ?> config, boolean isKey) {
         String configKey = isKey ? CONFIG_KEY_CLASS : CONFIG_VALUE_CLASS;
@@ -21,6 +24,7 @@ public class CustomDeserializer <T> implements Deserializer<T> {
                     configKey);
         }
     }
+
     @Override
     public T deserialize(String topic, byte[] bytes) {
         return (T) gson.fromJson(new String(bytes), cls);

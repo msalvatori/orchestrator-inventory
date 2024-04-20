@@ -2,7 +2,6 @@ package com.msbank.inventory.adapter.output.service.inventory.kafka.consumer;
 
 import com.msbank.inventory.adapter.output.service.inventory.kafka.SaleMessage;
 import com.msbank.inventory.core.domain.enums.SaleEvent;
-import com.msbank.inventory.core.output.service.inventory.producer.SendUpdateInventory;
 import com.msbank.inventory.core.usecase.CreditInventoryUseCase;
 import com.msbank.inventory.core.usecase.FindInventoryByProductIdUseCase;
 import org.apache.kafka.clients.consumer.ConsumerRecord;

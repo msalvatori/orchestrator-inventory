@@ -32,7 +32,7 @@ public class DebitInventoryUseCaseImpl implements DebitInventoryUseCase {
     private final UpdateInventory updateInventory;
 
     @Override
-    public Mono<Inventory> debit(Sale sale) {
+    public Mono<Inventory> execute(Sale sale) {
         var inventory1 = findInventoryByProductIdUseCase.find(sale.getProductId())
                 .filter(inventory -> inventory.getQuantity() >= sale.getQuantity())
                 .doOnSuccess(inventory -> {

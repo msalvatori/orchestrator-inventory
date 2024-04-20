@@ -5,6 +5,6 @@ import reactor.core.publisher.Mono;
 
 
 public interface FindInventoryByProductIdUseCase {
-    Mono<Inventory> find(Integer productId);
+    Mono<Inventory> execute(Integer productId);
 
 }

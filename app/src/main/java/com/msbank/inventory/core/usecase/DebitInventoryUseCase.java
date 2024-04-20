@@ -7,6 +7,6 @@ import reactor.core.publisher.Mono;
 
 
 public interface DebitInventoryUseCase {
-    Mono<Inventory> debit(Sale sale);
+    Mono<Inventory> execute(Sale sale);
 
 }
