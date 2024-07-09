@@ -19,12 +19,14 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.GROUP_ID_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG;
 import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET_CONFIG;
+
 @Configuration
 public class SaleKafkaConsumerDebitConfig {
+
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrap;
 
-    @Bean(name = "${spring.kafka.consumer.bean-receiver-debit}")
+    @Bean(name = "receiverBeanInventoryDebit")
     public ReceiverOptions<String, SaleMessage> kafkaReceiverOptions(@Value(value = "${spring.kafka.consumer.topic}") String topic) {
         Map<String, Object> props = new HashMap<>();
         props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrap);
@@ -37,8 +39,8 @@ public class SaleKafkaConsumerDebitConfig {
        // basicReceiverOptions.assignment(List.of(new TopicPartition("inventory-debit", 0)));
         return basicReceiverOptions.subscription(Collections.singletonList(topic));
     }
-    @Bean(name = "${spring.kafka.consumer.bean-debit}")
-    public ReactiveKafkaConsumerTemplate<String, SaleMessage> reactiveKafkaConsumerTemplate(@Qualifier("${spring.kafka.consumer.bean-receiver-debit}") ReceiverOptions<String, SaleMessage> kafkaReceiverOptions) {
+    @Bean(name = "beanInventoryDebit")
+    public ReactiveKafkaConsumerTemplate<String, SaleMessage> reactiveKafkaConsumerTemplate(@Qualifier("receiverBeanInventoryDebit") ReceiverOptions<String, SaleMessage> kafkaReceiverOptions) {
         return new ReactiveKafkaConsumerTemplate<String, SaleMessage>(kafkaReceiverOptions);
     }
 }

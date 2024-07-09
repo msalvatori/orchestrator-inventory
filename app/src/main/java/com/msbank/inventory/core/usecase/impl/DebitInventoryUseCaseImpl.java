@@ -1,6 +1,5 @@
 package com.msbank.inventory.core.usecase.impl;
 
-import com.msbank.inventory.core.domain.Inventory;
 import com.msbank.inventory.core.domain.Sale;
 import com.msbank.inventory.core.domain.enums.SaleEvent;
 import com.msbank.inventory.core.output.service.inventory.db.UpdateInventory;
@@ -11,10 +10,9 @@ import lombok.RequiredArgsConstructor;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
-import reactor.core.publisher.Mono;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicReference;
+
 
 import static com.msbank.inventory.core.constants.Constants.Iventory.ESTOQUE_INSUFICIENTE;
 
@@ -23,8 +21,6 @@ import static com.msbank.inventory.core.constants.Constants.Iventory.ESTOQUE_INS
 public class DebitInventoryUseCaseImpl implements DebitInventoryUseCase {
     Logger LOGGER = LogManager.getLogger("Log4Core");
 
-    private final DebitInventoryUseCase debitInventoryUseCase;
-
     private final FindInventoryByProductIdUseCase findInventoryByProductIdUseCase;
 
     private final SendUpdateInventory sendUpdateInventory;
@@ -32,21 +28,20 @@ public class DebitInventoryUseCaseImpl implements DebitInventoryUseCase {
     private final UpdateInventory updateInventory;
 
     @Override
-    public Mono<Inventory> execute(Sale sale) {
-        var inventory1 = findInventoryByProductIdUseCase.find(sale.getProductId())
+    public void execute(Sale sale) {
+          findInventoryByProductIdUseCase.execute(sale.getProductId())
                 .filter(inventory -> inventory.getQuantity() >= sale.getQuantity())
                 .doOnSuccess(inventory -> {
                     if (Objects.nonNull(inventory)) {
                         inventory.debitQuantity(sale.getQuantity());
                         updateInventory.update(inventory);
-                        sendUpdateInventory.sendInventory(sale, SaleEvent.INVENTORY_PREPARED);
+                        sendUpdateInventory.send(sale, SaleEvent.INVENTORY_PREPARED);
                     } else {
-                        sendUpdateInventory.sendInventory(sale, SaleEvent.INVENTORY_ERROR);
+                        sendUpdateInventory.send(sale, SaleEvent.INVENTORY_ERROR);
                         LOGGER.info(ESTOQUE_INSUFICIENTE);
                     }
-                }).block();
-     
-        return Objects.nonNull(inventory1) ? Mono.just(inventory1) : Mono.empty();
+                }).subscribe();
+
     }
 
 }

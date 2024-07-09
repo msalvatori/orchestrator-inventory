@@ -16,10 +16,6 @@ spring:
       topic: "tp-saga-orchestrator"
       group-id: "inventory"
     consumer:
-      bean-debit: "bean-inventory-debit"
-      bean-credit: "bean-inventory-credit"
-      bean-receiver-debit: "receiver-bean-inventory-debit"
-      bean-receiver-credit: "receiver-bean-inventory-credit"
       topic: "tp-saga-inventory"
 
   #JPA Properties

@@ -7,7 +7,6 @@ import com.msbank.inventory.core.output.service.inventory.dto.response.DataRespo
 import com.msbank.inventory.core.output.service.inventory.producer.SendUpdateInventory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.reactive.ReactiveKafkaProducerTemplate;
 import org.springframework.stereotype.Component;
@@ -20,14 +19,15 @@ public class SendUpdateIventoryAdapter implements SendUpdateInventory {
 
     @Value("${spring.kafka.producer.topic}")
     private String topic;
-    @Autowired
-    private ReactiveKafkaProducerTemplate<String, SaleMessage> reactiveKafkaProducerTemplate;
+
+    private final ReactiveKafkaProducerTemplate<String, SaleMessage> reactiveKafkaProducerTemplate;
+
     @Override
     public Mono<DataResponseDto> send(Sale sale, SaleEvent event) {
 
-        var saleMessage = SaleMessage.builder().saleEvent(event).sale(sale).build();
+        var saleMessage = new SaleMessage(sale, event);
+        log.info("send to topic={}, saleMessage{},", topic, saleMessage);
 
-        log.info("send to topic={}, {}={},", topic, saleMessage);
         reactiveKafkaProducerTemplate.send(topic, saleMessage)
                 .doOnSuccess(senderResult -> log.info("sent {} offset : {}",
                         sale,

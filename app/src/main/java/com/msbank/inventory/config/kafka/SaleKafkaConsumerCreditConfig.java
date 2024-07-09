@@ -22,7 +22,7 @@ import static org.apache.kafka.clients.consumer.ConsumerConfig.AUTO_OFFSET_RESET
 public class SaleKafkaConsumerCreditConfig {
     @Value("${spring.kafka.bootstrap-servers}")
     private String bootstrap;
-    @Bean(name = "${spring.kafka.consumer.bean-receiver-credit}")
+    @Bean(name = "receiverBeanInventoryCredit")
     public ReceiverOptions<String, SaleMessage> kafkaReceiverCreditOptions(@Value(value = "${spring.kafka.consumer.topic}") String topic) {
         Map<String, Object> props = new HashMap<>();
         props.put(BOOTSTRAP_SERVERS_CONFIG, bootstrap);
@@ -36,8 +36,8 @@ public class SaleKafkaConsumerCreditConfig {
         return basicReceiverOptions.subscription(Collections.singletonList(topic));
     }
 
-    @Bean(name = "${spring.kafka.consumer.bean-credit}")
-    public ReactiveKafkaConsumerTemplate<String, SaleMessage> reactiveKafkaConsumerCreditTemplate(@Qualifier("${spring.kafka.consumer.bean-receiver-credit}") ReceiverOptions<String, SaleMessage> kafkaReceiverOptions) {
+    @Bean(name = "beanInventoryCredit")
+    public ReactiveKafkaConsumerTemplate<String, SaleMessage> reactiveKafkaConsumerCreditTemplate(@Qualifier("receiverBeanInventoryCredit") ReceiverOptions<String, SaleMessage> kafkaReceiverOptions) {
         return new ReactiveKafkaConsumerTemplate<String, SaleMessage>(kafkaReceiverOptions);
     }
 }
